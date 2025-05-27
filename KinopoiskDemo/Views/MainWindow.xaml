@@ -1,0 +1,70 @@
+﻿<Window x:Class="KinopoiskDemo.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:KinopoiskDemo.ViewModels"
+        xmlns:m="clr-namespace:KinopoiskDemo.Models"
+        
+        Title="MainWindow" 
+        Height="450" Width="800">
+    
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
+    
+    <Window.Resources>
+        <DataTemplate x:Key="ItemOfFilms"
+                      DataType="{x:Type m:Doc}">
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} ({1})">
+                        <Binding Path="Name"/>
+                        <Binding Path="EnName"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </DataTemplate>
+    </Window.Resources>
+    
+    <DockPanel LastChildFill="True">
+        <StackPanel Orientation="Horizontal"
+                    DockPanel.Dock="Top">
+            <Label Target="{Binding ElementName=InputSearch}"
+                   Content="Поиск"/>
+            <TextBox x:Name="InputSearch"
+                     Text="{Binding SearchText}"/>
+            <Button Content="Найти"
+                    Command="{Binding SearchCommand}"/>
+        </StackPanel>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            
+            <ListBox ItemsSource="{Binding Films}"
+                     SelectedItem="{Binding SelectedFilm}"
+                     SelectionMode="Single"
+                     ItemTemplate="{StaticResource ItemOfFilms}"
+                     Grid.Column="0"/>
+            
+            <Grid DataContext="{Binding SelectedFilm}" 
+                  Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Orientation="Horizontal"
+                            Grid.Column="0">
+                    <TextBlock Text="{Binding Name}"/>
+                    <TextBlock Text="{Binding Description}"/>
+                    <ListBox ItemsSource="{Binding Countries}"/>
+                </StackPanel>
+                
+                <Image Source="{Binding Poster.Url}" 
+                       Grid.Column="1"/>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>
